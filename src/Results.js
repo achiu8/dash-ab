@@ -3,6 +3,6 @@ import { Header } from '@r29/prelude';
 
 export default class Results extends Component {
   render() {
-    return <Header title="Results" />
+    return <Header title="Dash A/B Testing" />
   }
 }

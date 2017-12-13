@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const mysql = require('mysql2/promise');
 
 const PORT = process.env.PORT || 9393;
@@ -19,9 +20,7 @@ const connection = mysql.createConnection({
   password: MYSQL_PASSWORD
 });
 
-app.get(['/ab', '/ab/configure'], (req, res) => {
-  res.sendFile(path.join(__dirname + '/../../build/index.html'));
-});
+app.use('/ab', express.static('build'));
 
 app.get('/ab/:id', (req, res) => {
   connection.then(conn => {
@@ -31,7 +30,5 @@ app.get('/ab/:id', (req, res) => {
     ).then(([results]) => res.send({ results }));
   });
 });
-
-app.use('/ab', express.static('build'));
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));
