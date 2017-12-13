@@ -1,0 +1,22 @@
+{
+  "name": "dash-ab",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@r29/dash-global-nav": "git+ssh://git@github.com/refinery29/dash-global-nav.git#v0.3.0",
+    "@r29/dash-utils": "^0.0.3",
+    "@r29/prelude": "git+ssh://git@github.com/refinery29/prelude.git#v1.1.0",
+    "immutable": "^3.8.2",
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.17"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
