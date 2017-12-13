@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Header, FormGroup, FormItem, TextInput } from '@r29/prelude';
-import { assoc, adjust } from 'ramda';
+import { assoc, adjust, identity } from 'ramda';
 
 import './Configure.css';
 
@@ -17,12 +17,12 @@ export default class Configure extends Component {
   handleNameChange = (_, value) =>
     this.setState({ name: value });
 
-  handleVariantChange = type => i => value =>
-    this.setState({ variants: adjust(assoc(type, value), i, this.state.variants) });
+  handleVariantChange = (type, f = identity) => i => value =>
+    this.setState({ variants: adjust(assoc(type, f(value)), i, this.state.variants) });
 
   handleVariantNameChange = this.handleVariantChange('name');
 
-  handleVariantWeightChange = this.handleVariantChange('weight');
+  handleVariantWeightChange = this.handleVariantChange('weight', parseInt);
 
   handleAddVariant = () =>
     this.setState({ variants: [...this.state.variants, { name: '', weight: '' }] });

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
+const buildExperimentConfig = require('./buildExperimentConfig');
 
 const PORT = process.env.PORT || 9393;
 const {
@@ -24,17 +25,28 @@ app.use(bodyParser.json())
 app.use('/ab', express.static('build'));
 
 app.get('/ab/:id', (req, res) => {
-  connection.then(conn => {
-    conn.execute(
-      'select * from users where email = ?',
-      ['andy.chiu@refinery29.com']
-    ).then(([results]) => res.send({ results }));
-  });
+  connection
+    .then(conn =>
+      conn.execute(
+        'select * from users where email = ?',
+        ['andy.chiu@refinery29.com']
+      )
+    )
+    .then(([results]) => res.send({ results }));
 });
 
 app.post('/ab', (req, res) => {
-  console.log('received', req.body);
-  res.send('success');
+  const { name, variants } = req.body;
+  const config = buildExperimentConfig(variants);
+
+  connection
+    .then(conn =>
+      conn.execute(
+        'insert into experiments (name, status, config)',
+        [name, 'off', JSON.stringify(config)]
+      )
+    )
+    .then(() => res.send('success'));
 });
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));
