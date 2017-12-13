@@ -28,7 +28,7 @@ app.get('/ab/:id', (req, res) => {
     conn.execute(
       'select * from users where email = ?',
       ['andy.chiu@refinery29.com']
-    ).then([results] => res.send({ results }));
+    ).then(([results]) => res.send({ results }));
   });
 });
 
