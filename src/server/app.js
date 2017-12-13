@@ -1,6 +1,5 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
+const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 
 const PORT = process.env.PORT || 9393;
@@ -20,6 +19,8 @@ const connection = mysql.createConnection({
   password: MYSQL_PASSWORD
 });
 
+app.use(bodyParser.json())
+
 app.use('/ab', express.static('build'));
 
 app.get('/ab/:id', (req, res) => {
@@ -29,6 +30,11 @@ app.get('/ab/:id', (req, res) => {
       ['andy.chiu@refinery29.com']
     ).then(([results]) => res.send({ results }));
   });
+});
+
+app.post('/ab', (req, res) => {
+  console.log('received', req.body);
+  res.send('success');
 });
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));
