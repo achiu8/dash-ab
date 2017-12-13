@@ -46,7 +46,7 @@ app.post('/ab', (req, res) => {
         [name, 'off', JSON.stringify(config)]
       )
     )
-    .then(() => res.send('success'));
+    .catch(err => res.send(err));
 });
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));
