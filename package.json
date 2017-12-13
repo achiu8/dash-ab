@@ -1,11 +1,13 @@
 {
   "name": "dash-ab",
   "version": "0.1.0",
+  "homepage": "https://dash.refinery29.com/ab",
   "private": true,
   "dependencies": {
     "@r29/dash-global-nav": "git+ssh://git@github.com/refinery29/dash-global-nav.git#v0.3.0",
     "@r29/dash-utils": "^0.0.3",
     "@r29/prelude": "git+ssh://git@github.com/refinery29/prelude.git#v1.1.0",
+    "express": "^4.16.2",
     "immutable": "^3.8.2",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
