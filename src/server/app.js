@@ -42,7 +42,7 @@ app.post('/ab', (req, res) => {
   connection
     .then(conn =>
       conn.execute(
-        'insert into experiments (name, status, config)',
+        'insert into experiments (name, status, config) values (?, ?, ?)',
         [name, 'off', JSON.stringify(config)]
       )
     )
