@@ -7,10 +7,9 @@ import util from './server/util';
 
 import './Results.css';
 
-const options = experiments =>
-  experiments.map(e => ({ label: e.name, value: e.name }));
-
 const toOption = v => ({ label: v, value: v });
+
+const experimentOptions = compose(map(toOption), pluck('name'));
 
 const statusOptions = ['on', 'off', 'resolved'].map(toOption);
 
@@ -39,7 +38,7 @@ export default class Results extends Component {
       .then(r => r.json())
       .then(r => this.setState(
         { experiments: r.result },
-        () => this.handleChange(null, r.result[0])
+        () => this.handleChange(null, r.result[0].name)
       ))
       .catch(() => {});
   }
@@ -71,7 +70,7 @@ export default class Results extends Component {
         <FormItem label="Experiment">
           <Select
             name="experiment"
-            options={options(this.state.experiments)}
+            options={experimentOptions(this.state.experiments)}
             value={this.state.selected.name}
             onChange={this.handleChange}
             clearable={false}
