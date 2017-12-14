@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Header, Select, AddButton, FormItem } from '@r29/prelude';
 import { compose, not, pluck, propEq } from 'ramda';
 import charts from './charts';
+import util from './server/util';
 
 import './Results.css';
 
@@ -46,7 +47,7 @@ export default class Results extends Component {
     this.state.summary.filter(compose(not, controlBucket));
 
   improvement = variant =>
-    (variant.mean / this.control().mean - 1) * 100;
+    variant.mean / this.control().mean - 1;
 
   render() {
     return (
@@ -82,7 +83,7 @@ export default class Results extends Component {
               <tbody>
                 <tr>
                   <td>Control</td>
-                  <td>123</td>
+                  <td>{this.control().count}</td>
                   <td>-</td>
                   <td>-</td>
                 </tr>
@@ -90,8 +91,8 @@ export default class Results extends Component {
                   <tr>
                     <td>{v.bucket}</td>
                     <td>{v.count}</td>
-                    <td>{this.improvement(v).toFixed(1)}%</td>
-                    <td>96.7%</td>
+                    <td>{compose(util.percentage, this.improvement)(v)}%</td>
+                    <td>{compose(util.percentage, util.confidence)([this.control(), v])}%</td>
                   </tr>
                 ))}
               </tbody>
