@@ -106,8 +106,8 @@ export default function charts(data, metricChart, distributionChart) {
 
   const yDist = d3.scaleLinear().range([height, 0]).domain([0, 1]);
 
-  drawArea(distribution, areaFunction(0)(x, yDist), 'lightsteelblue');
-  drawArea(distribution, areaFunction(height)(x, yDist), 'royalblue');
+  drawArea(distribution, areaFunction(height)(x, yDist), 'lightsteelblue');
+  drawArea(distribution, areaFunction(0)(x, yDist), 'royalblue');
 
   drawLine(control, lineFunction(x, y), 'lightsteelblue');
   drawLine(variant, lineFunction(x, y), 'royalblue');
