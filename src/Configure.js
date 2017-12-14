@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router';
 import { Button, Header, FormGroup, FormItem, TextInput } from '@r29/prelude';
 import { assoc, adjust, identity } from 'ramda';
 
 import './Configure.css';
 
-export default class Configure extends Component {
+class Configure extends Component {
   constructor(props) {
     super(props);
 
@@ -34,6 +35,7 @@ export default class Configure extends Component {
       credentials: 'include',
       body: JSON.stringify(this.state)
     })
+      .then(res => res.status === 200 && this.props.history.push('/ab'));
 
   render() {
     return (
@@ -70,3 +72,5 @@ export default class Configure extends Component {
     );
   }
 }
+
+export default withRouter(Configure);
