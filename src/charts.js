@@ -68,25 +68,22 @@ export default function charts(data) {
   const [control, variant] = ['control', 'variant'].map(metricsFor);
   const distribution = distributions.map(distData);
 
-  console.log(control);
-  console.log(variant);
-
   const x = d3.scaleTime()
     .range([0, width])
     .domain(d3.extent(distribution, prop('x')));
 
-  // const y = d3.scaleLinear()
-  //   .range([height, 0])
-  //   .domain(d3.extent([...control, ...variant], prop('y')));
+  const y = d3.scaleLinear()
+    .range([height, 0])
+    .domain(d3.extent([...control, ...variant], prop('y')));
 
   const yDist = d3.scaleLinear().range([height, 0]).domain([0, 1]);
 
   drawArea(distribution, areaFunction(0)(x, yDist), 'aliceblue');
   drawArea(distribution, areaFunction(height)(x, yDist), 'lightsteelblue');
 
-  // drawLine(control, lineFunction(x, y), 'blue');
-  // drawLine(variant, lineFunction(x, y), 'green');
+  drawLine(control, lineFunction(x, y), 'aliceblue');
+  drawLine(variant, lineFunction(x, y), 'lightsteelblue');
 
-  // drawAxes(x, y, container);
+  drawAxes(x, y, container);
   drawAxes(x, yDist, container2);
 }
