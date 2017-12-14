@@ -1,5 +1,5 @@
 const d3 = require('d3');
-const { compose, map, prop } = require('ramda');
+const { compose, map, pluck, prop } = require('ramda');
 const util = require('./server/util');
 
 const margin = 40;
@@ -16,6 +16,11 @@ const areaFunction = y0 => (x, y) =>
     .x(compose(x, prop('x')))
     .y0(y0)
     .y1(compose(y, prop('y')));
+
+const ordinal = buckets =>
+  d3.scaleOrdinal()
+    .domain(buckets)
+    .range(['lightsteelblue', 'royalblue']);
 
 const lineData = d => ({ x: new Date(d.date), y: d.sum / d.count });
 const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
@@ -68,7 +73,15 @@ export default function charts(data, metricChart, distributionChart) {
       .call(d3.axisLeft(y).tickFormat(d3.format('.1f')));
   };
 
-  const { distributions, metrics } = data;
+  const { distributions, metrics, summary } = data;
+
+  const drawLegend = container =>
+    container.append('g')
+      .attr('transform', 'translate(20, 20)')
+      .call(d3.legendColor()
+        .shapeWidth(20)
+        .orient('horizontal')
+        .scale(ordinal(pluck('bucket', summary))));
 
   const metricsFor = bucket => compose(map(lineData), util.zipSummary(bucket))(metrics, distributions);
 
@@ -93,4 +106,7 @@ export default function charts(data, metricChart, distributionChart) {
 
   drawAxes(x, y, container);
   drawAxes(x, yDist, container2);
+
+  drawLegend(container);
+  drawLegend(container2);
 }
