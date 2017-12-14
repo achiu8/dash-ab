@@ -1,9 +1,9 @@
 const d3 = require('d3');
-const { compose, prop, props, map } = require('ramda');
+const { compose, map, prop } = require('ramda');
 const util = require('./server/util');
 
-const margin = 25;
-const width = 1030;
+const margin = 40;
+const width = 1000;
 const height = 400;
 
 const lineFunction = (x, y) =>
@@ -55,12 +55,15 @@ export default function charts(data) {
 
   const drawAxes = (x, y, container) => {
     container.append('g')
+      .attr('class', 'axis')
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x)
-        .ticks(d3.timeMonth.every(1))
+        .ticks(d3.timeDay.every(3))
         .tickFormat(d3.timeFormat('%b-%y')));
 
-    container.append('g').call(d3.axisLeft(y));
+    container.append('g')
+      .attr('class', 'axis')
+      .call(d3.axisLeft(y).tickFormat(d3.format('.1f')));
   };
 
   const { distributions, metrics } = data;
