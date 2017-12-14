@@ -21,17 +21,18 @@ const lineData = d => ({ x: new Date(d.date), y: d.sum / d.count });
 const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
 
 export default function charts(data, metricChart, distributionChart) {
-  d3.select(metricChart).selectAll('svg').remove();
-  d3.select(distributionChart).selectAll('svg').remove();
-
-  const container = metricChart
+  const container = d3.select(metricChart)
+    .selectAll('svg')
+      .remove()
     .append('svg')
       .attr('width', width + 2 * margin)
       .attr('height', height + 2 * margin)
     .append('g')
       .attr('transform', `translate(${margin}, ${margin})`);
 
-  const container2 = distributionChart
+  const container2 = d3.select(distributionChart)
+    .selectAll('svg')
+      .remove()
     .append('svg')
       .attr('width', width + 2 * margin)
       .attr('height', height + 2 * margin)
