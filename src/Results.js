@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Select, AddButton, FormItem } from '@r29/prelude';
-import { pluck } from 'ramda';
+import { compose, not, pluck, propEq } from 'ramda';
 import charts from './charts';
 
 import './Results.css';
 
 const options = values =>
   values.map(v => ({ label: v, value: v }));
+
+const controlBucket = propEq('bucket', 'control');
 
 export default class Results extends Component {
   constructor(props) {
@@ -32,9 +34,18 @@ export default class Results extends Component {
     fetch(`/ab/results/${value}`, { credentials: 'include' })
       .then(r => r.json())
       .then(r => this.setState(
-        { selected: value },
+        { selected: value, summary: r.result.summary },
         charts(r.result, this.metricChart, this.distributionChart)
       ));
+
+  control = () =>
+    this.state.summary.find(controlBucket);
+
+  variants = () =>
+    this.state.summary.filter(compose(not, controlBucket));
+
+  improvement = variant =>
+    variant.mean / this.control().mean - 1;
 
   render() {
     return (
@@ -74,12 +85,14 @@ export default class Results extends Component {
                   <td>-</td>
                   <td>-</td>
                 </tr>
-                <tr>
-                  <td>Variant</td>
-                  <td>125</td>
-                  <td>5.6%</td>
-                  <td>96.7%</td>
-                </tr>
+                {this.variants().map(v => (
+                  <tr>
+                    <td>{v.bucket}</td>
+                    <td>{v.count}</td>
+                    <td>{this.improvement(v)}</td>
+                    <td>96.7%</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
