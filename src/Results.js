@@ -47,7 +47,8 @@ export default class Results extends Component {
           onChange={this.handleChange}
           clearable={false}
         />
-        <div id="charts" />
+        <div ref={node => this.metricChart = node} />
+        <div ref={node => this.distributionChart = node} />
       </div>
     );
   }

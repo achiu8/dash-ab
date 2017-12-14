@@ -20,19 +20,18 @@ const areaFunction = y0 => (x, y) =>
 const lineData = d => ({ x: new Date(d.date), y: d.sum / d.count });
 const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
 
-export default function charts(data) {
-  const body = d3.select('#charts');
+export default function charts(data, metricChart, distributionChart) {
+  d3.select(metricChart).selectAll('svg').remove();
+  d3.select(distributionChart).selectAll('svg').remove();
 
-  body.selectAll('svg').remove();
-
-  const container = body
+  const container = metricChart
     .append('svg')
       .attr('width', width + 2 * margin)
       .attr('height', height + 2 * margin)
     .append('g')
       .attr('transform', `translate(${margin}, ${margin})`);
 
-  const container2 = body
+  const container2 = distributionChart
     .append('svg')
       .attr('width', width + 2 * margin)
       .attr('height', height + 2 * margin)
@@ -59,7 +58,7 @@ export default function charts(data) {
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x)
         .ticks(d3.timeDay.every(3))
-        .tickFormat(d3.timeFormat('%b-%y')));
+        .tickFormat(d3.timeFormat('%m-%d-%y')));
 
     container.append('g')
       .attr('class', 'axis')
