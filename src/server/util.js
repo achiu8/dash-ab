@@ -5,7 +5,7 @@ const add = (acc, d) => Object.assign({}, d, {
   variant: (acc.variant || 0) + d.variant
 });
 
-const div = key => (sums, counts) => ({
+const summary = key => (sums, counts) => ({
   date: sums.date,
   sum: sums[key],
   count: counts[key]
@@ -18,5 +18,5 @@ const parse = d => Object.assign({}, d, {
 
 module.exports = {
   accumulate: compose(tail, scan(add, {}), map(parse)),
-  zipSumCount: key => zipWith(div(key))
+  zipSummary: key => zipWith(summary(key))
 };

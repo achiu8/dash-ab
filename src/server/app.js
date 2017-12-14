@@ -55,11 +55,13 @@ app.get('/ab/results/:name', (req, res) => {
   connection
     .then(conn => Promise.all([
       conn.execute(sql.distributions, [name]),
-      conn.execute(sql.metrics, [name])
+      conn.execute(sql.metrics, [name]),
+      conn.execute(sql.summary, [name, name, name]),
     ]))
-    .then(([[distributions], [metrics]]) => res.send({ result: {
+    .then(([[distributions], [metrics], [summary]]) => res.send({ result: {
       distributions: util.accumulate(distributions),
-      metrics: util.accumulate(metrics)
+      metrics: util.accumulate(metrics),
+      summary
     }}));
 });
 

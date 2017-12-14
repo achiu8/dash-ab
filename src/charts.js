@@ -70,7 +70,7 @@ export default function charts(data, metricChart, distributionChart) {
 
   const { distributions, metrics } = data;
 
-  const metricsFor = bucket => compose(map(lineData), util.zipSumCount(bucket))(metrics, distributions);
+  const metricsFor = bucket => compose(map(lineData), util.zipSummary(bucket))(metrics, distributions);
 
   const [control, variant] = ['control', 'variant'].map(metricsFor);
   const distribution = distributions.map(distData);
