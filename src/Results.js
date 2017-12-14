@@ -59,7 +59,6 @@ export default class Results extends Component {
   improvement = variant => variant.mean / this.control().mean - 1;
 
   render() {
-    console.log(this.state.selected.name);
     return (
       <div className="results">
         <Header title="Dash A/B Testing" />
@@ -70,7 +69,7 @@ export default class Results extends Component {
           <Select
             name="experiment"
             options={options(this.state.experiments)}
-            value={this.state.selected.name}
+            value={this.state.selected}
             onChange={this.handleChange}
             clearable={false}
           />
