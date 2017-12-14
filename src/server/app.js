@@ -95,4 +95,18 @@ app.get('/ab/buckets/:entryId', (req, res) => {
     }}));
 });
 
+app.post('/ab/buckets', (req, res) => {
+  const { id, name, bucket } = req.body;
+
+  connection
+    .then(conn =>
+      conn.execute(
+        'insert into entry_experiments (entry_id, experiment_name, bucket) values (?, ?, ?)',
+        [id, name, bucket]
+      )
+    )
+    .then(() => res.send('success'))
+    .catch(err => res.status(500).send(err));
+});
+
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));
