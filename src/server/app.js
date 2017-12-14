@@ -24,6 +24,13 @@ app.use(bodyParser.json())
 
 app.use('/ab', express.static('build'));
 
+app.get('/ab/experiments', (req, res) => {
+  return res.send({ result: ['autoload', 'other', 'more'] });
+  connection
+    .then(conn => conn.execute('select name from experiments'))
+    .then(([result]) => res.send({ result }));
+});
+
 app.get('/ab/:id', (req, res) => {
   connection
     .then(conn =>
@@ -32,7 +39,7 @@ app.get('/ab/:id', (req, res) => {
         ['andy.chiu@refinery29.com']
       )
     )
-    .then(([results]) => res.send({ results }));
+    .then(([result]) => res.send({ result }));
 });
 
 app.post('/ab', (req, res) => {
@@ -47,7 +54,37 @@ app.post('/ab', (req, res) => {
       )
     )
     .then(() => res.send('success'))
-    .catch(err => res.send(err));
+    .catch(err => res.status(500).send(err));
+});
+
+const distributionSql = `
+select
+  bucketed_at as date,
+  sum(case when bucket = 'control' then 1 else 0 end) as control,
+  sum(case when bucket = 'auto' then 1 else 0 end) as auto
+from entry_experiments
+where experiment_name = 'autoload'
+group by 1
+`;
+
+const metricSql = `
+select
+  date(ee.bucketed_at) as date,
+  sum(case when ee.bucket = 'control' then 1 else 0 end) as control,
+  sum(case when ee.bucket = 'auto' then 1 else 0 end) as auto
+from blog_entries be
+  join entry_experiments ee on be.id = ee.entry_id
+  join blog_entry_tags bet on be.id = bet.entry_id
+  join blog_tags bt on bt.id = bet.tag_id
+where ee.experiment_name = 'autoload'
+  and bt.type = 'channels'
+group by 1
+`;
+
+app.get('/ab/results/:name', (req, res) => {
+  connection
+    .then(conn => Promise.all([conn.execute(distributionSql), conn.execute(metricSql)]))
+    .then(([[distributions], [metrics]]) => res.send({ distributions, metrics }));
 });
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));

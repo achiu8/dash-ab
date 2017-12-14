@@ -1,13 +1,42 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Header } from '@r29/prelude';
+import { Header, Select } from '@r29/prelude';
+
+const options = values =>
+  values.map(v => ({ label: v, value: v }));
 
 export default class Results extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      experiments: []
+    };
+  }
+
+  componentWillMount() {
+    fetch('/ab/experiments', { credentials: 'include' })
+      .then(r => r.json())
+      .then(r => this.setState({ experiments: r.result, selected: r.result[0] }));
+  }
+
+  handleChange = (_, value) =>
+    fetch(`/ab/results/${value}`, { credentials: 'include' })
+      .then(r => r.json())
+      .then(r => this.setState({ selected: value, data: r }));
+
   render() {
     return (
       <div>
         <Header title="Dash A/B Testing" />
         <Link to="/ab/configure">Configure New Experiment</Link>
+        <Select
+          name="experiment"
+          options={options(this.state.experiments)}
+          value={this.state.selected}
+          onChange={this.handleChange}
+          clearable={false}
+        />
       </div>
     );
   }
