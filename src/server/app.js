@@ -4,6 +4,7 @@ const mysql = require('mysql2/promise');
 const buildExperimentConfig = require('./buildExperimentConfig');
 const buildBuckets = require('./buildBuckets');
 const buildConfigs = require('./buildConfigs');
+const sql = require('./sql');
 
 const PORT = process.env.PORT || 9393;
 const {
@@ -47,30 +48,6 @@ app.post('/ab', (req, res) => {
     .catch(err => res.status(500).send(err));
 });
 
-const distributionSql = `
-select
-  bucketed_at as date,
-  sum(case when bucket = 'control' then 1 else 0 end) as control,
-  sum(case when bucket != 'control' then 1 else 0 end) as variant
-from entry_experiments
-where experiment_name = ?
-group by 1
-`;
-
-const metricSql = `
-select
-  date(ee.bucketed_at) as date,
-  sum(case when ee.bucket = 'control' then 1 else 0 end) as control,
-  sum(case when ee.bucket != 'control' then 1 else 0 end) as variant
-from blog_entries be
-  join entry_experiments ee on be.id = ee.entry_id
-  join blog_entry_tags bet on be.id = bet.entry_id
-  join blog_tags bt on bt.id = bet.tag_id
-where ee.experiment_name = ?
-  and bt.type = 'channels'
-group by 1
-`;
-
 const project = d => Object.assign({}, d, {
   control: parseInt(d.control),
   variant: parseInt(d.variant)
@@ -81,8 +58,8 @@ app.get('/ab/results/:name', (req, res) => {
 
   connection
     .then(conn => Promise.all([
-      conn.execute(distributionSql, [name]),
-      conn.execute(metricSql, [name])
+      conn.execute(sql.distributions, [name]),
+      conn.execute(sql.metrics, [name])
     ]))
     .then(([[distributions], [metrics]]) => res.send({ result: {
       distributions: distributions.map(project),

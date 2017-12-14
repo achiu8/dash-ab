@@ -1,5 +1,5 @@
-import d3 from 'd3';
-import { compose, prop, props, map } from 'ramda';
+const d3 = require('d3');
+const { compose, prop, props, map } = require('ramda');
 
 const margin = 20;
 const width = 1040;
