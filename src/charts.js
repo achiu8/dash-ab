@@ -84,7 +84,7 @@ export default function charts(data, metricChart, distributionChart) {
   const { distributions, metrics, summary } = data;
 
   const drawLegend = container =>
-    container.append('g')
+    container.select('svg').append('g')
       .attr('class', 'legend')
       .attr('transform', `translate(${(width + 2 * margin) / 2 - 50} , 20)`)
       .call(legendColor()
