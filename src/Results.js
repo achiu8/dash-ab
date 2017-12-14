@@ -8,7 +8,7 @@ import util from './server/util';
 import './Results.css';
 
 const options = experiments =>
-  experiments.map(e => ({ label: e.name, value: e }));
+  experiments.map(e => ({ label: e.name, value: e.name }));
 
 const toOption = v => ({ label: v, value: v });
 
@@ -44,11 +44,14 @@ export default class Results extends Component {
       .catch(() => {});
   }
 
-  handleChange = (_, experiment) =>
-    fetch(`/ab/results/${experiment.name}`, { credentials: 'include' })
+  handleChange = (_, name) =>
+    fetch(`/ab/results/${name}`, { credentials: 'include' })
       .then(r => r.json())
       .then(r => this.setState(
-        { selected: experiment, summary: r.result.summary },
+        {
+          selected: this.state.experiments.find(propEq('name', name)),
+          summary: r.result.summary
+        },
         charts(r.result, this.metricChart, this.distributionChart)
       ));
 
@@ -69,7 +72,7 @@ export default class Results extends Component {
           <Select
             name="experiment"
             options={options(this.state.experiments)}
-            value={this.state.selected}
+            value={this.state.selected.name}
             onChange={this.handleChange}
             clearable={false}
           />
