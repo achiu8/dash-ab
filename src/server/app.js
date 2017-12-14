@@ -5,6 +5,7 @@ const buildExperimentConfig = require('./buildExperimentConfig');
 const buildBuckets = require('./buildBuckets');
 const buildConfigs = require('./buildConfigs');
 const sql = require('./sql');
+const util = require('./util');
 
 const PORT = process.env.PORT || 9393;
 const {
@@ -48,11 +49,6 @@ app.post('/ab', (req, res) => {
     .catch(err => res.status(500).send(err));
 });
 
-const project = d => Object.assign({}, d, {
-  control: parseInt(d.control),
-  variant: parseInt(d.variant)
-});
-
 app.get('/ab/results/:name', (req, res) => {
   const { name } = req.params;
 
@@ -62,8 +58,8 @@ app.get('/ab/results/:name', (req, res) => {
       conn.execute(sql.metrics, [name])
     ]))
     .then(([[distributions], [metrics]]) => res.send({ result: {
-      distributions: distributions.map(project),
-      metrics
+      distributions: util.accumulate(distributions),
+      metrics: util.accumulate(metrics)
     }}));
 });
 
