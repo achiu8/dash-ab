@@ -17,30 +17,6 @@ const areaFunction = y0 => (x, y) =>
     .y0(y0)
     .y1(compose(y, prop('y')));
 
-const drawLine = (data, line, color) =>
-  container.append('path')
-    .data([data])
-    .attr('d', line)
-    .attr('stroke', color)
-    .attr('stroke-width', '2')
-    .attr('fill', 'none');
-
-const drawArea = (data, area, color) =>
-  container2.append('path')
-    .data([data])
-    .attr('d', area)
-    .attr('fill', color);
-
-const drawAxes = (x, y, container) => {
-  container.append('g')
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x)
-      .ticks(d3.timeMonth.every(1))
-      .tickFormat(d3.timeFormat('%b-%y')));
-
-  container.append('g').call(d3.axisLeft(y));
-};
-
 const lineData = d => ({ x: new Date(d.date), y: d.sum / d.count });
 const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
 
@@ -60,6 +36,30 @@ export default function charts(data) {
       .attr('height', height + 2 * margin)
     .append('g')
       .attr('transform', `translate(${margin}, ${margin})`);
+
+  const drawLine = (data, line, color) =>
+    container.append('path')
+      .data([data])
+      .attr('d', line)
+      .attr('stroke', color)
+      .attr('stroke-width', '2')
+      .attr('fill', 'none');
+
+  const drawArea = (data, area, color) =>
+    container2.append('path')
+      .data([data])
+      .attr('d', area)
+      .attr('fill', color);
+
+  const drawAxes = (x, y, container) => {
+    container.append('g')
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x)
+        .ticks(d3.timeMonth.every(1))
+        .tickFormat(d3.timeFormat('%b-%y')));
+
+    container.append('g').call(d3.axisLeft(y));
+  };
 
   const { distributions, metrics } = data;
 
