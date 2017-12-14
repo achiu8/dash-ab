@@ -44,8 +44,9 @@ app.post('/ab', (req, res) => {
       conn.execute(
         'insert into experiments (name, status, config) values (?, ?, ?)',
         [name, 'off', JSON.stringify(config)]
-      ).then(() => res.send('success'))
+      )
     )
+    .then(() => res.send('success'))
     .catch(err => res.send(err));
 });
 

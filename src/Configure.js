@@ -31,6 +31,7 @@ export default class Configure extends Component {
     fetch('/ab', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(this.state)
     })
 
