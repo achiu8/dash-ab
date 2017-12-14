@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Header, Select, AddButton, FormItem } from '@r29/prelude';
+import { Button, Header, Select, AddButton, FormItem } from '@r29/prelude';
 import { compose, keys, map, not, prop, pluck, propEq } from 'ramda';
 import charts from './charts';
 import util from './server/util';
@@ -53,6 +53,14 @@ export default class Results extends Component {
         },
         charts(r.result, this.metricChart, this.distributionChart)
       ));
+
+  submit = () =>
+    fetch('/ab/update', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(this.state.selected)
+    });
 
   control = () => this.state.summary.find(controlBucket) || {};
 
@@ -125,7 +133,9 @@ export default class Results extends Component {
             name="status"
             options={statusOptions}
             value={this.state.selected.status}
-            onChange={() => {}}
+            onChange={(_, status) => this.setState({
+              selected: { ...this.state.selected, status }
+            })}
             clearable={false}
           />
         </FormItem>
@@ -134,10 +144,13 @@ export default class Results extends Component {
             name="resolve"
             options={resolveOptions(this.state.selected)}
             value={this.state.selected.resolved_variant}
-            onChange={() => {}}
+            onChange={(_, resolved_variant) => this.setState({
+              selected: { ...this.state.selected, resolved_variant }
+            })}
             clearable={false}
           />
         </FormItem>
+        <Button onClick={this.submit}>Save Changes</Button>
       </div>
     );
   }
