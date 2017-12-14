@@ -1,5 +1,6 @@
 const d3 = require('d3');
-const { compose, map, pluck, prop } = require('ramda');
+const { legendColor } = require('d3-svg-legend');
+const { compose, equals, filter, map, not, pluck, prepend, prop } = require('ramda');
 const util = require('./server/util');
 
 const margin = 40;
@@ -21,6 +22,13 @@ const ordinal = buckets =>
   d3.scaleOrdinal()
     .domain(buckets)
     .range(['lightsteelblue', 'royalblue']);
+
+const scale = compose(
+  ordinal,
+  prepend('control'),
+  filter(compose(not, equals('control'))),
+  pluck('bucket')
+);
 
 const lineData = d => ({ x: new Date(d.date), y: d.sum / d.count });
 const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
@@ -78,10 +86,10 @@ export default function charts(data, metricChart, distributionChart) {
   const drawLegend = container =>
     container.append('g')
       .attr('transform', 'translate(20, 20)')
-      .call(d3.legendColor()
+      .call(legendColor()
         .shapeWidth(20)
         .orient('horizontal')
-        .scale(ordinal(pluck('bucket', summary))));
+        .scale(scale(summary)));
 
   const metricsFor = bucket => compose(map(lineData), util.zipSummary(bucket))(metrics, distributions);
 
