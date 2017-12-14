@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Select, AddButton } from '@r29/prelude';
 import { pluck } from 'ramda';
+import charts from './charts';
 
 import './Results.css';
 
@@ -30,7 +31,7 @@ export default class Results extends Component {
   handleChange = (_, value) =>
     fetch(`/ab/results/${value}`, { credentials: 'include' })
       .then(r => r.json())
-      .then(r => this.setState({ selected: value, data: r.result }));
+      .then(r => this.setState({ selected: value }, charts(r.result)));
 
   render() {
     return (
@@ -46,6 +47,7 @@ export default class Results extends Component {
           onChange={this.handleChange}
           clearable={false}
         />
+        <div id="charts" />
       </div>
     );
   }

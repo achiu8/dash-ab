@@ -71,6 +71,11 @@ where ee.experiment_name = ?
 group by 1
 `;
 
+const project = d => Object.assign({}, d, {
+  control: parseInt(d.control),
+  variant: parseInt(d.variant)
+});
+
 app.get('/ab/results/:name', (req, res) => {
   const { name } = req.params;
 
@@ -79,7 +84,10 @@ app.get('/ab/results/:name', (req, res) => {
       conn.execute(distributionSql, [name]),
       conn.execute(metricSql, [name])
     ]))
-    .then(([[distributions], [metrics]]) => res.send({ result: { distributions, metrics } }));
+    .then(([[distributions], [metrics]]) => res.send({ result: {
+      distributions: distributions.map(project),
+      metrics
+    }}));
 });
 
 app.get('/ab/buckets/:entryId', (req, res) => {
