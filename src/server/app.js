@@ -85,8 +85,8 @@ app.get('/ab/results/:name', (req, res) => {
 
   connection
     .then(conn => Promise.all([
-      conn.execute(distributionSql, name),
-      conn.execute(metricSql, name)
+      conn.execute(distributionSql, [name]),
+      conn.execute(metricSql, [name])
     ]))
     .then(([[distributions], [metrics]]) => res.send({ result: { distributions, metrics } }));
 });
