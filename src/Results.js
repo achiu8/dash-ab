@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Header, Select, AddButton } from '@r29/prelude';
+import { Header, Select, AddButton, FormItem } from '@r29/prelude';
 import { pluck } from 'ramda';
 import charts from './charts';
 
@@ -50,8 +50,35 @@ export default class Results extends Component {
           onChange={this.handleChange}
           clearable={false}
         />
-        <div ref={node => this.metricChart = node} />
-        <div ref={node => this.distributionChart = node} />
+        <FormItem label="Cumulative Average Channel Tags per Story">
+          <div ref={node => this.metricChart = node} />
+        </FormItem>
+        <FormItem label="Cumulative Bucket Distribution">
+          <div ref={node => this.distributionChart = node} />
+        </FormItem>
+        <FormItem label="Summary">
+          <div ref={node => this.distributionChart = node} />
+          <table>
+            <tr>
+              <th>Bucket</th>
+              <th>Sample Size</th>
+              <th>Percentage Improvement</th>
+              <th>Chance to Beat Control</th>
+            </tr>
+            <tr>
+              <td>Control</td>
+              <td>123</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Variant</td>
+              <td>125</td>
+              <td>5.6%</td>
+              <td>96.7%</td>
+            </tr>
+          </table>
+        </FormItem>
       </div>
     );
   }
