@@ -26,6 +26,9 @@ export default class Results extends Component {
       experiments: [],
       summary: [],
       selected: {
+        name: '',
+        status: '',
+        resolved_variant: null,
         config: {}
       }
     };
@@ -56,19 +59,22 @@ export default class Results extends Component {
   improvement = variant => variant.mean / this.control().mean - 1;
 
   render() {
+    console.log(this.state.selected.name);
     return (
       <div className="results">
         <Header title="Dash A/B Testing" />
         <Link to="/ab/configure" className="add-button">
           <AddButton onClick={() => {}} />
         </Link>
-        <Select
-          name="experiment"
-          options={options(this.state.experiments)}
-          value={this.state.selected.name}
-          onChange={this.handleChange}
-          clearable={false}
-        />
+        <FormItem label="Experiment">
+          <Select
+            name="experiment"
+            options={options(this.state.experiments)}
+            value={this.state.selected.name}
+            onChange={this.handleChange}
+            clearable={false}
+          />
+        </FormItem>
         <FormItem label="Cumulative Average Channel Tags per Story">
           <div ref={node => this.metricChart = node} />
         </FormItem>
