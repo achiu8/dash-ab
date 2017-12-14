@@ -6,6 +6,44 @@ const margin = 20;
 const width = 1040;
 const height = 400;
 
+const lineFunction = (x, y) =>
+  d3.line()
+    .x(compose(x, prop('x')))
+    .y(compose(y, prop('y')));
+
+const areaFunction = y0 => (x, y) =>
+  d3.area()
+    .x(compose(x, prop('x')))
+    .y0(y0)
+    .y1(compose(y, prop('y')));
+
+const drawLine = (data, line, color) =>
+  container.append('path')
+    .data([data])
+    .attr('d', line)
+    .attr('stroke', color)
+    .attr('stroke-width', '2')
+    .attr('fill', 'none');
+
+const drawArea = (data, area, color) =>
+  container2.append('path')
+    .data([data])
+    .attr('d', area)
+    .attr('fill', color);
+
+const drawAxes = (x, y, container) => {
+  container.append('g')
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x)
+      .ticks(d3.timeMonth.every(1))
+      .tickFormat(d3.timeFormat('%b-%y')));
+
+  container.append('g').call(d3.axisLeft(y));
+};
+
+const lineData = d => ({ x: new Date(d.date), y: d.sum / d.count });
+const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
+
 export default function charts(data) {
   const body = d3.select('#charts');
 
@@ -23,43 +61,7 @@ export default function charts(data) {
     .append('g')
       .attr('transform', `translate(${margin}, ${margin})`);
 
-  const lineFunction = (x, y) =>
-    d3.line()
-      .x(compose(x, prop('x')))
-      .y(compose(y, prop('y')));
-
-  const areaFunction = y0 => (x, y) =>
-    d3.area()
-      .x(compose(x, prop('x')))
-      .y0(y0)
-      .y1(compose(y, prop('y')));
-
-  const drawLine = (data, line, color) =>
-    container.append('path')
-      .data([data])
-      .attr('d', line)
-      .attr('stroke', color)
-      .attr('stroke-width', '2')
-      .attr('fill', 'none');
-
-  const drawArea = (data, area, color) =>
-    container2.append('path')
-      .data([data])
-      .attr('d', area)
-      .attr('fill', color);
-
-  const drawAxes = (x, y, container) => {
-    container.append('g')
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x)
-        .ticks(d3.timeMonth.every(1))
-        .tickFormat(d3.timeFormat('%b-%y')));
-
-    container.append('g').call(d3.axisLeft(y));
-  };
-
-  const lineData = d => ({ x: new Date(d.date), y: d.sum / d.count });
-  const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
+  const { distributions, metrics } = data;
 
   const metricsFor = bucket => compose(map(lineData), util.zipSumCount(bucket))(metrics, distributions);
 
