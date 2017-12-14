@@ -57,27 +57,32 @@ export default class Results extends Component {
           <div ref={node => this.distributionChart = node} />
         </FormItem>
         <FormItem label="Summary">
-          <div ref={node => this.distributionChart = node} />
-          <table>
-            <tr>
-              <th>Bucket</th>
-              <th>Sample Size</th>
-              <th>Percentage Improvement</th>
-              <th>Chance to Beat Control</th>
-            </tr>
-            <tr>
-              <td>Control</td>
-              <td>123</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>Variant</td>
-              <td>125</td>
-              <td>5.6%</td>
-              <td>96.7%</td>
-            </tr>
-          </table>
+          <div className="summary-container">
+            <table className="summary">
+              <thead>
+                <tr>
+                  <th>Bucket</th>
+                  <th>Sample Size</th>
+                  <th>Percentage Improvement</th>
+                  <th>Chance to Beat Control</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Control</td>
+                  <td>123</td>
+                  <td>-</td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <td>Variant</td>
+                  <td>125</td>
+                  <td>5.6%</td>
+                  <td>96.7%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </FormItem>
       </div>
     );
