@@ -49,6 +49,21 @@ app.post('/ab', (req, res) => {
     .catch(err => res.status(500).send(err));
 });
 
+app.post('/ab/update', (req, res) => {
+  const { name, status, resolved_variant } = req.body;
+
+  connection
+    .then(conn =>
+      conn.execute(
+        'update experiments set status = ?, resolved_variant = ? where name = ?',
+        [status, resolved_variant, name]
+      )
+    )
+    .then(() => res.send('success'))
+    .catch(err => res.status(500).send(err));
+});
+
+
 app.get('/ab/results/:name', (req, res) => {
   const { name } = req.params;
 
