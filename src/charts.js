@@ -1,3 +1,4 @@
+import d3 from 'd3';
 import { compose, prop, props, map } from 'ramda';
 
 const margin = 20;
