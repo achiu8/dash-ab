@@ -25,8 +25,8 @@ const threshold = 0.05;
 
 const recommendation = cond([
   [(d, c) => d >= threshold && c >= 1 - threshold, always('Resolve to Variant')],
-  [(d, c) => d < 0 && c <= threshold, always('Resolve to Control')],
-  [T => always('Keep Running')]
+  [(d, c) => d < 0 && c <= threshold,              always('Resolve to Control')],
+  [T =>                                            always('Keep Running')]
 ]);
 
 module.exports = {

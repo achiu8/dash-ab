@@ -90,14 +90,16 @@ export default class Results extends Component {
                   const improvement = this.improvement(v);
                   const confidence = util.confidence([this.control(), v]);
 
-                  <tr>
-                    <td>{v.bucket}</td>
-                    <td>{v.count}</td>
-                    <td>{util.percentage(improvement)}%</td>
-                    <td>{util.percentage(confidence)}%</td>
-                    <td>util.recommendation(improvement, confidence)</td>
-                  </tr>
-                  })}
+                  return (
+                    <tr>
+                      <td>{v.bucket}</td>
+                      <td>{v.count}</td>
+                      <td>{util.percentage(improvement)}%</td>
+                      <td>{util.percentage(confidence)}%</td>
+                      <td>util.recommendation(improvement, confidence)</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
