@@ -40,14 +40,11 @@ export default class Results extends Component {
         charts(r.result, this.metricChart, this.distributionChart)
       ));
 
-  control = () =>
-    this.state.summary.find(controlBucket);
+  control = () => this.state.summary.find(controlBucket);
 
-  variants = () =>
-    this.state.summary.filter(compose(not, controlBucket));
+  variants = () => this.state.summary.filter(compose(not, controlBucket));
 
-  improvement = variant =>
-    variant.mean / this.control().mean - 1;
+  improvement = variant => variant.mean / this.control().mean - 1;
 
   render() {
     return (
