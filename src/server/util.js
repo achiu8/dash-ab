@@ -1,4 +1,4 @@
-const { compose, scan } = require('ramda');
+const { compose, map, scan } = require('ramda');
 
 const add = (acc, d) => Object.assign({}, d, {
   control: acc.control + d.control,
