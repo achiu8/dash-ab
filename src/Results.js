@@ -31,7 +31,10 @@ export default class Results extends Component {
   handleChange = (_, value) =>
     fetch(`/ab/results/${value}`, { credentials: 'include' })
       .then(r => r.json())
-      .then(r => this.setState({ selected: value }, charts(r.result)));
+      .then(r => this.setState(
+        { selected: value },
+        charts(r.result, this.metricChart, this.distributionChart)
+      ));
 
   render() {
     return (
