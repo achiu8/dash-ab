@@ -97,7 +97,7 @@ export default class Results extends Component {
                 <tr>
                   <th>Bucket</th>
                   <th>Sample Size</th>
-                  <th>Percentage Improvement</th>
+                  <th>Relative Improvement</th>
                   <th>Chance to Beat Control</th>
                   <th>Recommendation</th>
                 </tr>
