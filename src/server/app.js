@@ -30,7 +30,7 @@ app.use('/ab', express.static('build'));
 
 app.get('/ab/experiments', (req, res) => {
   connection
-    .then(conn => conn.execute('select name from experiments'))
+    .then(conn => conn.execute('select * from experiments'))
     .then(([result]) => res.send({ result }));
 });
 

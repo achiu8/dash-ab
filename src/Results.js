@@ -7,8 +7,14 @@ import util from './server/util';
 
 import './Results.css';
 
-const options = values =>
-  values.map(v => ({ label: v, value: v }));
+const options = experiments =>
+  experiments.map(e => ({ label: e.name, value: e }));
+
+const toOption = v => ({ label: v, value: v });
+
+const statusOptions = ['on', 'off', 'resolved'].map(toOption);
+
+const resolveOptions = e => Object.keys(e.config).map(toOption);
 
 const controlBucket = propEq('bucket', 'control');
 
@@ -18,7 +24,10 @@ export default class Results extends Component {
 
     this.state = {
       experiments: [],
-      summary: []
+      summary: [],
+      selected: {
+        config: {}
+      }
     };
   }
 
@@ -26,17 +35,17 @@ export default class Results extends Component {
     fetch('/ab/experiments', { credentials: 'include' })
       .then(r => r.json())
       .then(r => this.setState(
-        { experiments: pluck('name', r.result) },
-        () => this.handleChange(null, r.result[0].name)
+        { experiments: r.result },
+        () => this.handleChange(null, r.result[0])
       ))
       .catch(() => {});
   }
 
-  handleChange = (_, value) =>
-    fetch(`/ab/results/${value}`, { credentials: 'include' })
+  handleChange = (_, experiment) =>
+    fetch(`/ab/results/${experiment.name}`, { credentials: 'include' })
       .then(r => r.json())
       .then(r => this.setState(
-        { selected: value, summary: r.result.summary },
+        { selected: experiment, summary: r.result.summary },
         charts(r.result, this.metricChart, this.distributionChart)
       ));
 
@@ -56,7 +65,7 @@ export default class Results extends Component {
         <Select
           name="experiment"
           options={options(this.state.experiments)}
-          value={this.state.selected}
+          value={this.state.selected.name}
           onChange={this.handleChange}
           clearable={false}
         />
@@ -96,13 +105,31 @@ export default class Results extends Component {
                       <td>{v.count}</td>
                       <td>{util.percentage(improvement)}%</td>
                       <td>{util.percentage(confidence)}%</td>
-                      <td>util.recommendation(improvement, confidence)</td>
+                      <td>{util.recommendation(improvement, confidence)}</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
+        </FormItem>
+        <FormItem label="Status">
+          <Select
+            name="status"
+            options={statusOptions}
+            value={this.state.selected.status}
+            onChange={() => {}}
+            clearable={false}
+          />
+        </FormItem>
+        <FormItem label="Resolve to">
+          <Select
+            name="resolve"
+            options={resolveOptions(this.state.selected)}
+            value={this.state.selected.resolved_variant}
+            onChange={() => {}}
+            clearable={false}
+          />
         </FormItem>
       </div>
     );
