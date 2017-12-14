@@ -86,7 +86,7 @@ export default function charts(data, metricChart, distributionChart) {
       .attr('class', 'legend')
       .attr('transform', `translate(${(width + 2 * margin) / 2 - 50} , 20)`)
       .call(legendColor()
-        .shapeWidth(50)
+        .shapeWidth(60)
         .shapeHeight(3)
         .orient('horizontal')
         .scale(scale(summary)));
