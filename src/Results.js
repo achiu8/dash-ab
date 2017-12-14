@@ -75,6 +75,7 @@ export default class Results extends Component {
                   <th>Sample Size</th>
                   <th>Percentage Improvement</th>
                   <th>Chance to Beat Control</th>
+                  <th>Recommendation</th>
                 </tr>
               </thead>
               <tbody>
@@ -83,15 +84,20 @@ export default class Results extends Component {
                   <td>{this.control().count}</td>
                   <td>-</td>
                   <td>-</td>
+                  <td>-</td>
                 </tr>
-                {this.variants().map(v => (
+                {this.variants().map(v => {
+                  const improvement = this.improvement(v);
+                  const confidence = util.confidence([this.control(), v]);
+
                   <tr>
                     <td>{v.bucket}</td>
                     <td>{v.count}</td>
-                    <td>{compose(util.percentage, this.improvement)(v)}%</td>
-                    <td>{compose(util.percentage, util.confidence)([this.control(), v])}%</td>
+                    <td>{util.percentage(improvement)}%</td>
+                    <td>{util.percentage(confidence)}%</td>
+                    <td>util.recommendation(improvement, confidence)</td>
                   </tr>
-                ))}
+                  })}
               </tbody>
             </table>
           </div>
