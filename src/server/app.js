@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 const buildExperimentConfig = require('./buildExperimentConfig');
+const buildBuckets = require('./buildBuckets');
+const buildConfigs = require('./buildConfigs');
 
 const PORT = process.env.PORT || 9393;
 const {
@@ -30,17 +32,6 @@ app.get('/ab/experiments', (req, res) => {
     .then(([result]) => res.send({ result }));
 });
 
-app.get('/ab/:id', (req, res) => {
-  connection
-    .then(conn =>
-      conn.execute(
-        'select * from users where email = ?',
-        ['andy.chiu@refinery29.com']
-      )
-    )
-    .then(([result]) => res.send({ result }));
-});
-
 app.post('/ab', (req, res) => {
   const { name, variants } = req.body;
   const config = buildExperimentConfig(variants);
@@ -60,7 +51,7 @@ const distributionSql = `
 select
   bucketed_at as date,
   sum(case when bucket = 'control' then 1 else 0 end) as control,
-  sum(case when bucket = 'auto' then 1 else 0 end) as auto
+  sum(case when bucket != 'control' then 1 else 0 end) as variant
 from entry_experiments
 where experiment_name = ?
 group by 1
@@ -70,7 +61,7 @@ const metricSql = `
 select
   date(ee.bucketed_at) as date,
   sum(case when ee.bucket = 'control' then 1 else 0 end) as control,
-  sum(case when ee.bucket = 'auto' then 1 else 0 end) as auto
+  sum(case when ee.bucket != 'control' then 1 else 0 end) as variant
 from blog_entries be
   join entry_experiments ee on be.id = ee.entry_id
   join blog_entry_tags bet on be.id = bet.entry_id
@@ -89,6 +80,21 @@ app.get('/ab/results/:name', (req, res) => {
       conn.execute(metricSql, [name])
     ]))
     .then(([[distributions], [metrics]]) => res.send({ result: { distributions, metrics } }));
+});
+
+app.get('/ab/buckets/:entryId', (req, res) => {
+  connection
+    .then(conn => Promise.all([
+      conn.execute(
+        'select experiment_name as name, bucket from entry_experiments where entry_id = ?',
+        [req.params.entryId]
+      ),
+      conn.execute('select * from experiments')
+    ]))
+    .then(([[experiments], [configs]]) => res.send({ result: {
+      buckets: buildBuckets(experiments),
+      config: buildConfigs(configs)
+    }}));
 });
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));
