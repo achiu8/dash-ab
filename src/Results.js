@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Header, Select } from '@r29/prelude';
+import { pluck } from 'ramda';
 
 const options = values =>
   values.map(v => ({ label: v, value: v }));
@@ -17,7 +18,10 @@ export default class Results extends Component {
   componentWillMount() {
     fetch('/ab/experiments', { credentials: 'include' })
       .then(r => r.json())
-      .then(r => this.setState({ experiments: r.result, selected: r.result[0] }));
+      .then(r => this.setState(
+        { experiments: pluck('name', r.result) },
+        () => this.handleChange(null, r.result[0].name)
+      ));
   }
 
   handleChange = (_, value) =>
