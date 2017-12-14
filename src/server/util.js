@@ -1,8 +1,8 @@
 const { compose, map, scan } = require('ramda');
 
 const add = (acc, d) => Object.assign({}, d, {
-  control: acc.control + d.control,
-  variant: acc.variant + d.variant
+  control: (acc.control || 0) + d.control,
+  variant: (acc.variant || 0) + d.variant
 });
 
 const parse = d => Object.assign({}, d, {
@@ -11,5 +11,5 @@ const parse = d => Object.assign({}, d, {
 });
 
 module.exports = {
-  accumulate: compose(scan(add), map(parse))
+  accumulate: compose(scan(add, {}), map(parse))
 };

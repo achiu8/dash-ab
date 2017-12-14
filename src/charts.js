@@ -62,6 +62,7 @@ export default function charts(data) {
 
   // const [control, variant] = compose(map(lineData), props(['control', 'variant']))(data);
   const distribution = data.distributions.map(distData);
+  console.log(distribution);
 
   const x = d3.scaleTime()
     .range([0, width])
