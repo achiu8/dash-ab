@@ -60,7 +60,7 @@ class Configure extends Component {
     return (
       <div>
         <Header
-          title="Configure"
+          title="Configure New Experiment"
           backLink={{ label: 'Results', href: '/ab' }}
           onBackClick={this.backToResults}
         />
