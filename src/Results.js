@@ -16,7 +16,8 @@ export default class Results extends Component {
     super(props);
 
     this.state = {
-      experiments: []
+      experiments: [],
+      summary: []
     };
   }
 
