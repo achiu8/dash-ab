@@ -85,9 +85,11 @@ export default function charts(data, metricChart, distributionChart) {
 
   const drawLegend = container =>
     container.append('g')
-      .attr('transform', 'translate(20, 20)')
+      .attr('class', 'legend')
+      .attr('transform', `translate(${(width + 2 * margin) / 2 - 50} , 20)`)
       .call(legendColor()
-        .shapeWidth(20)
+        .shapeWidth(50)
+        .shapeHeight(5)
         .orient('horizontal')
         .scale(scale(summary)));
 
@@ -115,6 +117,6 @@ export default function charts(data, metricChart, distributionChart) {
   drawAxes(x, y, container);
   drawAxes(x, yDist, container2);
 
-  drawLegend(container);
-  drawLegend(container2);
+  drawLegend(metricContainer);
+  drawLegend(distributionContainer);
 }
