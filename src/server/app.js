@@ -25,7 +25,6 @@ app.use(bodyParser.json())
 app.use('/ab', express.static('build'));
 
 app.get('/ab/experiments', (req, res) => {
-  return res.send({ result: ['autoload', 'other', 'more'] });
   connection
     .then(conn => conn.execute('select name from experiments'))
     .then(([result]) => res.send({ result }));
@@ -63,7 +62,7 @@ select
   sum(case when bucket = 'control' then 1 else 0 end) as control,
   sum(case when bucket = 'auto' then 1 else 0 end) as auto
 from entry_experiments
-where experiment_name = 'autoload'
+where experiment_name = ?
 group by 1
 `;
 
@@ -76,15 +75,20 @@ from blog_entries be
   join entry_experiments ee on be.id = ee.entry_id
   join blog_entry_tags bet on be.id = bet.entry_id
   join blog_tags bt on bt.id = bet.tag_id
-where ee.experiment_name = 'autoload'
+where ee.experiment_name = ?
   and bt.type = 'channels'
 group by 1
 `;
 
 app.get('/ab/results/:name', (req, res) => {
+  const { name } = req.params;
+
   connection
-    .then(conn => Promise.all([conn.execute(distributionSql), conn.execute(metricSql)]))
-    .then(([[distributions], [metrics]]) => res.send({ distributions, metrics }));
+    .then(conn => Promise.all([
+      conn.execute(distributionSql, name),
+      conn.execute(metricSql, name)
+    ]))
+    .then(([[distributions], [metrics]]) => res.send({ result: { distributions, metrics } }));
 });
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}...`));

@@ -23,7 +23,7 @@ export default class Results extends Component {
   handleChange = (_, value) =>
     fetch(`/ab/results/${value}`, { credentials: 'include' })
       .then(r => r.json())
-      .then(r => this.setState({ selected: value, data: r }));
+      .then(r => this.setState({ selected: value, data: r.result }));
 
   render() {
     return (
