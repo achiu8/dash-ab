@@ -1,5 +1,6 @@
 const d3 = require('d3');
 const { compose, prop, props, map } = require('ramda');
+const util = require('./server/util');
 
 const margin = 20;
 const width = 1040;
@@ -33,9 +34,6 @@ export default function charts(data) {
       .y0(y0)
       .y1(compose(y, prop('y')));
 
-  const lineData = map(d => ({ x: new Date(d.date), y: d.sum / d.count }));
-  const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
-
   const drawLine = (data, line, color) =>
     container.append('path')
       .data([data])
@@ -60,9 +58,16 @@ export default function charts(data) {
     container.append('g').call(d3.axisLeft(y));
   };
 
-  // const [control, variant] = compose(map(lineData), props(['control', 'variant']))(data);
-  const distribution = data.distributions.map(distData);
-  console.log(distribution);
+  const lineData = d => ({ x: new Date(d.date), y: d.sum / d.count });
+  const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.variant) });
+
+  const metricsFor = bucket => compose(map(lineData), util.zipSumCount(bucket))(metrics, distributions);
+
+  const [control, variant] = ['control', 'variant'].map(metricsFor);
+  const distribution = distributions.map(distData);
+
+  console.log(control);
+  console.log(variant);
 
   const x = d3.scaleTime()
     .range([0, width])

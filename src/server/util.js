@@ -1,8 +1,14 @@
-const { compose, map, scan, tail } = require('ramda');
+const { compose, map, scan, tail, zipWith } = require('ramda');
 
 const add = (acc, d) => Object.assign({}, d, {
   control: (acc.control || 0) + d.control,
   variant: (acc.variant || 0) + d.variant
+});
+
+const div = key => (sums, counts) => ({
+  date: sums.date,
+  sum: sums[key],
+  count: counts[key]
 });
 
 const parse = d => Object.assign({}, d, {
@@ -11,5 +17,6 @@ const parse = d => Object.assign({}, d, {
 });
 
 module.exports = {
-  accumulate: compose(tail, scan(add, {}), map(parse))
+  accumulate: compose(tail, scan(add, {}), map(parse)),
+  zipSumCount: key => zipWith(div(key))
 };
