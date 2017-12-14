@@ -28,6 +28,7 @@ select
   sums.bucket,
   sums.sum,
   counts.count,
+  sums.sum / counts.count as mean,
   stddevs.stddev
 from (
   select
