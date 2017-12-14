@@ -61,7 +61,7 @@ const drawAxes = (x, y, container) => {
 
 export default function charts(data) {
   // const [control, variant] = compose(map(lineData), props(['control', 'variant']))(data);
-  const distribution = data.distribution.map(distData);
+  const distribution = data.distributions.map(distData);
 
   const x = d3.scaleTime()
     .range([0, width])
