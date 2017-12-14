@@ -4,6 +4,7 @@ const { compose, equals, filter, map, not, pluck, prepend, prop } = require('ram
 const util = require('./server/util');
 
 const margin = 40;
+const legendHeight = 20;
 const width = 1000;
 const height = 400;
 
@@ -40,19 +41,16 @@ export default function charts(data, metricChart, distributionChart) {
   metricContainer.selectAll('svg').remove();
   distributionContainer.selectAll('svg').remove();
 
-  const container = metricContainer
-    .append('svg')
-      .attr('width', width + 2 * margin)
-      .attr('height', height + 2 * margin)
-    .append('g')
-      .attr('transform', `translate(${margin}, ${margin})`);
+  const drawContainer = container =>
+    container
+      .append('svg')
+        .attr('width', width + 2 * margin)
+        .attr('height', height + 2 * margin + legendHeight)
+      .append('g')
+        .attr('transform', `translate(${margin}, ${margin + legendHeight})`);
 
-  const container2 = distributionContainer
-    .append('svg')
-      .attr('width', width + 2 * margin)
-      .attr('height', height + 2 * margin)
-    .append('g')
-      .attr('transform', `translate(${margin}, ${margin})`);
+  const container = drawContainer(metricContainer);
+  const container2 = drawContainer(distributionContainer);
 
   const drawLine = (data, line, color) =>
     container.append('path')
