@@ -46,7 +46,7 @@ export default class Results extends Component {
     this.state.summary.filter(compose(not, controlBucket));
 
   improvement = variant =>
-    variant.mean / this.control().mean - 1;
+    (variant.mean / this.control().mean - 1) * 100;
 
   render() {
     return (
@@ -90,7 +90,7 @@ export default class Results extends Component {
                   <tr>
                     <td>{v.bucket}</td>
                     <td>{v.count}</td>
-                    <td>{this.improvement(v)}</td>
+                    <td>{this.improvement(v).toFixed(1)}%</td>
                     <td>96.7%</td>
                   </tr>
                 ))}
