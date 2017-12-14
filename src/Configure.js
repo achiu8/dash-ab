@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
-import { Button, Header, FormGroup, FormItem, TextInput } from '@r29/prelude';
 import { assoc, adjust, identity } from 'ramda';
+import {
+  Button,
+  FormGroup,
+  FormItem,
+  Header,
+  NotificationBar,
+  TextInput
+} from '@r29/prelude';
 
 import './Configure.css';
 
@@ -11,7 +18,8 @@ class Configure extends Component {
 
     this.state = {
       name: '',
-      variants: [{ name: 'control', weight: 100 }]
+      variants: [{ name: 'control', weight: 100 }],
+      errors: []
     };
   }
 
@@ -35,12 +43,28 @@ class Configure extends Component {
       credentials: 'include',
       body: JSON.stringify(this.state)
     })
-      .then(res => res.status === 200 && this.props.history.push('/ab'));
+      .then(res =>
+        res.status === 200
+          ? this.backToResults()
+          : this.setState({ errors: [{
+            id: 'save-error',
+            text: 'Something went wrong.',
+            type: 'error',
+            dismissable: true
+          }]})
+      );
+
+  backToResults = () =>
+    this.props.history.push('/ab');
 
   render() {
     return (
       <div>
-        <Header title="Configure" />
+        <Header
+          title="Configure"
+          backLink={{ label: 'Results', href: '/ab' }}
+          onBackClick={this.backToResults}
+        />
         <FormItem label="Experiment Name">
           <TextInput
             name="name"
@@ -68,6 +92,11 @@ class Configure extends Component {
           <Button onClick={this.handleAddVariant}>Add Variant</Button>
         </FormGroup>
         <Button onClick={this.submit}>Save Experiment</Button>
+        <NotificationBar
+          messages={this.state.errors}
+          onDismiss={() => this.setState({ errors: [] })}
+          withoutNav
+        />
       </div>
     );
   }

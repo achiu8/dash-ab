@@ -1,0 +1,9 @@
+.results {
+  position: relative;
+}
+
+.add-button {
+  position: absolute;
+  top: 42px;
+  right: 0;
+}
