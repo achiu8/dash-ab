@@ -23,8 +23,7 @@ class Configure extends Component {
     };
   }
 
-  handleNameChange = (_, value) =>
-    this.setState({ name: value });
+  handleNameChange = (_, value) => this.setState({ name: value });
 
   handleVariantChange = (type, f = identity) => i => value =>
     this.setState({ variants: adjust(assoc(type, f(value)), i, this.state.variants) });
