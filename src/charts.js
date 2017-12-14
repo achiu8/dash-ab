@@ -2,8 +2,8 @@ const d3 = require('d3');
 const { compose, prop, props, map } = require('ramda');
 const util = require('./server/util');
 
-const margin = 20;
-const width = 1040;
+const margin = 25;
+const width = 1030;
 const height = 400;
 
 const lineFunction = (x, y) =>
@@ -22,6 +22,8 @@ const distData = d => ({ x: new Date(d.date), y: d.control / (d.control + d.vari
 
 export default function charts(data) {
   const body = d3.select('#charts');
+
+  body.selectAll('svg').remove();
 
   const container = body
     .append('svg')
@@ -78,11 +80,11 @@ export default function charts(data) {
 
   const yDist = d3.scaleLinear().range([height, 0]).domain([0, 1]);
 
-  drawArea(distribution, areaFunction(0)(x, yDist), 'aliceblue');
-  drawArea(distribution, areaFunction(height)(x, yDist), 'lightsteelblue');
+  drawArea(distribution, areaFunction(0)(x, yDist), 'lightsteelblue');
+  drawArea(distribution, areaFunction(height)(x, yDist), 'royalblue');
 
-  drawLine(control, lineFunction(x, y), 'aliceblue');
-  drawLine(variant, lineFunction(x, y), 'lightsteelblue');
+  drawLine(control, lineFunction(x, y), 'lightsteelblue');
+  drawLine(variant, lineFunction(x, y), 'royalblue');
 
   drawAxes(x, y, container);
   drawAxes(x, yDist, container2);
