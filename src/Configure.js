@@ -7,6 +7,7 @@ import {
   FormItem,
   Header,
   NotificationBar,
+  Select,
   TextInput
 } from '@r29/prelude';
 
@@ -18,12 +19,15 @@ class Configure extends Component {
 
     this.state = {
       name: '',
+      metric: '',
       variants: [{ name: 'control', weight: 100 }],
       errors: []
     };
   }
 
   handleNameChange = (_, value) => this.setState({ name: value });
+
+  handleMetricChange = (_, value) => this.setState({ metric: value });
 
   handleVariantChange = (type, f = identity) => i => value =>
     this.setState({ variants: adjust(assoc(type, f(value)), i, this.state.variants) });
@@ -69,6 +73,15 @@ class Configure extends Component {
             name="name"
             value={this.state.name}
             onChange={this.handleNameChange}
+          />
+        </FormItem>
+        <FormItem label="Evaluation Metric">
+          <Select
+            name="metric"
+            options={[{ label: 'channels', value: 'channels' }]}
+            value={this.state.metric}
+            onChange={this.handleMetricChange}
+            clearable={false}
           />
         </FormItem>
         <FormGroup title="Variants">
