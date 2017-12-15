@@ -49,11 +49,11 @@ svg {
 }
 
 .control {
-  background-color: 'firebrick';
+  background-color: firebrick;
   color: white;
 }
 
 .variant {
-  background-color: 'mediumseagreen';
+  background-color: mediumseagreen;
   color: white;
 }
