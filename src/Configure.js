@@ -25,9 +25,7 @@ class Configure extends Component {
     };
   }
 
-  handleNameChange = (_, value) => this.setState({ name: value });
-
-  handleMetricChange = (_, value) => this.setState({ metric: value });
+  handleChange = (key, value) => this.setState({ [key]: value });
 
   handleVariantChange = (type, f = identity) => i => value =>
     this.setState({ variants: adjust(assoc(type, f(value)), i, this.state.variants) });
@@ -72,7 +70,16 @@ class Configure extends Component {
           <TextInput
             name="name"
             value={this.state.name}
-            onChange={this.handleNameChange}
+            onChange={this.handleChange}
+          />
+        </FormItem>
+        <FormItem label="Bucket By">
+          <Select
+            name="dimension"
+            options={[{ label: 'entry', value: 'entry' }]}
+            value={this.state.dimension}
+            onChange={this.handleChange}
+            clearable={false}
           />
         </FormItem>
         <FormItem label="Evaluation Metric">
@@ -80,7 +87,7 @@ class Configure extends Component {
             name="metric"
             options={[{ label: 'channels', value: 'channels' }]}
             value={this.state.metric}
-            onChange={this.handleMetricChange}
+            onChange={this.handleChange}
             clearable={false}
           />
         </FormItem>
