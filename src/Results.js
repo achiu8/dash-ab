@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Header, Select, AddButton, FormItem } from '@r29/prelude';
-import { compose, keys, map, not, prop, pluck, propEq } from 'ramda';
+import { compose, flip, keys, map, not, prop, pluck, propEq } from 'ramda';
 import charts from './charts';
 import util from './server/util';
 
