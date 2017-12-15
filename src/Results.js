@@ -17,6 +17,12 @@ const resolveOptions = compose(map(toOption), keys, prop('config'));
 
 const controlBucket = propEq('bucket', 'control');
 
+const recommendationText = flip(prop)({
+  control: 'Resolve to Control',
+  variant: 'Resolve to Variant',
+  keep: 'Keep Running'
+});
+
 export default class Results extends Component {
   constructor(props) {
     super(props);
@@ -113,6 +119,7 @@ export default class Results extends Component {
                 {this.variants().map(v => {
                   const improvement = this.improvement(v);
                   const confidence = util.confidence([this.control(), v]);
+                  const recommendation = util.recommendation(improvement, confidence);
 
                   return (
                     <tr>
@@ -120,7 +127,7 @@ export default class Results extends Component {
                       <td>{v.count}</td>
                       <td>{util.percentage(improvement)}%</td>
                       <td>{util.percentage(confidence)}%</td>
-                      <td>{util.recommendation(improvement, confidence)}</td>
+                      <td className={recommendation}>{recommendationText(recommendation)}</td>
                     </tr>
                   );
                 })}

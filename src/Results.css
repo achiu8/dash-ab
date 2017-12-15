@@ -47,3 +47,13 @@ svg {
   letter-spacing: .1em;
   text-transform: uppercase;
 }
+
+.control {
+  background-color: 'firebrick';
+  color: white;
+}
+
+.variant {
+  background-color: 'mediumseagreen';
+  color: white;
+}
